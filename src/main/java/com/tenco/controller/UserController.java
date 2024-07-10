@@ -5,6 +5,8 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
+
 import java.io.IOException;
 
 import com.tenco.model.UserDAO;
@@ -57,7 +59,7 @@ public class UserController extends HttpServlet {
     	System.out.println("action : " + action);
     	switch (action) {
 		case "/signIn":
-			
+			signIn(request, response);
 			break;
 		case "/signUp" :
 			signUp(request, response);
@@ -66,6 +68,37 @@ public class UserController extends HttpServlet {
 			response.sendError(HttpServletResponse.SC_NOT_FOUND);
 			break;
 		}
+	}
+
+	/**
+	 * 로그인 처리 기능
+	 * @param request
+	 * @param response
+	 * @throws IOException 
+	 */
+	private void signIn(HttpServletRequest request, HttpServletResponse response) throws IOException {
+		// 컨트롤러의 대표적인 역할
+		// URL 맵핑, 인증 검사, 유효성 검사, 서비스 로직, DAO 에게 전달, 뷰 호출
+		String username = request.getParameter("username");
+		String password = request.getParameter("password");
+		
+		// 유효성 검사
+		if (username == null || password.trim().isEmpty()) {
+			response.sendRedirect("signIn?message=invalid");
+			return;
+		}
+		
+		UserDTO user = userDAO.getUserByUsername(username);
+		if (user != null && user.getPassword().equals(password)) {
+			HttpSession session = request.getSession();
+			session.setAttribute("principal", user);
+			response.sendRedirect("/mvc/todo/todoForm");
+		} else {
+			response.sendRedirect("signIn?message=invalid");
+		}
+		// user = null --> 회원가입이 안된 사람
+		// 비밀번호 == dto.getPassword();
+		
 	}
 
 	/**
@@ -98,12 +131,13 @@ public class UserController extends HttpServlet {
 				.email(email)
 				.build();
 		
+//		int resultRowCount = 0;
 		int resultRowCount = userDAO.addUser(userDTO);
 		System.out.println("resultRowCount : " + resultRowCount);
 		if (resultRowCount == 1) {
-			response.sendRedirect("user/singIn?message=success");
+			response.sendRedirect("singIn?message=success");
 		} else {
-			response.sendRedirect("user/signUp?message=error");			
+			response.sendRedirect("signUp?message=error");			
 		}
 	}
 
