@@ -5,6 +5,7 @@
 <head>
 <meta charset="UTF-8">
 <title>새 할 일 추가</title>
+<link rel="stylesheet" type="text/css" href="../css/todoFormStyles.css">
 </head>
 <body>
 	<h1>Todo Page</h1>
@@ -22,7 +23,7 @@
 		<input type="date" id="due_date" name="due_date" value="2024-07-11">
 		<br><br>
 		<label for="completed">완료 여부 : </label>
-		<input type="checkbox" id="completed" name="completed" value="true"><br>
+		<input type="checkbox" id="completed" name="completed"><br>
 		<button type="submit">추가</button>
 	</form>
 	<br><br>

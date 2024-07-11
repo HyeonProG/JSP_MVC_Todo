@@ -1,0 +1,126 @@
+@charset "UTF-8";
+
+body {
+    background-color: #fff4e6;
+    margin: 0;
+    padding: 20px; /* 추가적인 패딩 설정 */
+}
+
+h2 {
+    color: #FF6347;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+a {
+    color: #FF6347;
+    font-size: 16px;
+    margin: auto;
+    display: block;
+    text-align: center;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+table {
+    width: 100%;
+    max-width: 840px;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color: #fff;
+    border: 2px solid #FF6347;
+}
+
+th, td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #FF6347;
+}
+
+th {
+    background-color: #FF6347;
+    color: #fff;
+}
+
+td {
+    background-color: #ffece6;
+}
+
+form {
+    background-color: #fff;
+    border-radius: 20px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    margin: 20px auto;
+    border: 2px solid #FF6347;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #FF6347;
+    font-weight: bold;
+}
+
+input[type="text"],
+textarea,
+input[type="date"] {
+    width: calc(100% - 24px);
+    padding: 12px;
+    margin-bottom: 20px;
+    border: 1px solid #FF6347;
+    border-radius: 10px;
+    background-color: #ffece6;
+    font-size: 16px;
+}
+
+input[type="text"]:focus,
+textarea:focus,
+input[type="date"]:focus {
+    border-color: #FF4500;
+    outline: none;
+    box-shadow: 0 0 8px rgba(255, 99, 71, 0.2);
+}
+
+textarea {
+    height: 210px;
+    width: calc(100% - 24px);
+}
+
+input[type="checkbox"] {
+    margin-bottom: 20px;
+    transform: scale(1.5);
+    margin-right: 10px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    background-color: #FF6347;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #FF4500;
+}
+
+hr {
+    border: none;
+    border-top: 2px solid #FF6347;
+    width: 100%;
+    max-width: 800px;
+    margin: 20px auto;
+}
+
+p {
+    text-align: center;
+    color: #FF6347;
+    font-size: 16px;
+}

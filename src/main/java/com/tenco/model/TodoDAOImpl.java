@@ -34,8 +34,8 @@ public class TodoDAOImpl implements TodoDAO {
 				pstmt.setInt(1, principalId);
 				pstmt.setString(2, dto.getTitle());
 				pstmt.setString(3, dto.getDescription());
-				pstmt.setString(4, dto.getDueDate());
-				pstmt.setBoolean(5, dto.getCompleted());
+				pstmt.setString(4, dto.getDueDate());					
+				pstmt.setInt(5, dto.getCompleted() == "true" ? 1 : 0);
 				pstmt.executeUpdate();
 
 				conn.commit();
@@ -65,7 +65,7 @@ public class TodoDAOImpl implements TodoDAO {
 					todoDTO.setTitle(rs.getString("title"));
 					todoDTO.setDescription(rs.getString("description"));
 					todoDTO.setDueDate(rs.getString("due_date"));
-					todoDTO.setCompleted(rs.getBoolean("completed"));
+					todoDTO.setCompleted(rs.getString("completed"));
 				}
 				
 			} catch (Exception e) {
@@ -82,20 +82,22 @@ public class TodoDAOImpl implements TodoDAO {
 	@Override
 	public List<TodoDTO> getTodosByUserId(int userId) {
 		String sql = " select * from todos where user_id = ? ";
-		List<TodoDTO> list = new ArrayList<>();
+		List<TodoDTO> todos = new ArrayList<>();
+		
 		try (Connection conn = dataSource.getConnection()) {
-			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
-				pstmt.setInt(1, userId);
-				ResultSet rs = pstmt.executeQuery();
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userId);
+			try (ResultSet rs = pstmt.executeQuery()) {
 				while (rs.next()) {
 					TodoDTO todoDTO = new TodoDTO();
 					todoDTO.setId(rs.getInt("id"));
+					todoDTO.setUserId(rs.getInt("user_id"));
 					todoDTO.setTitle(rs.getString("title"));
 					todoDTO.setDescription(rs.getString("description"));
 					todoDTO.setDueDate(rs.getString("due_date"));
-					todoDTO.setCompleted(rs.getBoolean("completed"));
-					todoDTO.setUserId(rs.getInt("user_id"));
-					list.add(todoDTO);
+					todoDTO.setCompleted(rs.getString("completed"));
+					todos.add(todoDTO);
+					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -103,27 +105,28 @@ public class TodoDAOImpl implements TodoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("TodoList : " + list.toString());
-		return list;
+		
+		return todos;
 	}
 
 	@Override
 	public List<TodoDTO> getAllTodos() {
 		String sql = " select * from todos ";
-		List<TodoDTO> list = new ArrayList<>();
+		List<TodoDTO> todos = new ArrayList<>();
 		
 		try (Connection conn = dataSource.getConnection()) {
-			try(PreparedStatement pstmt = conn.prepareStatement(sql)) {
-				ResultSet rs = pstmt.executeQuery();
-				while(rs.next()) {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			try (ResultSet rs = pstmt.executeQuery()) {
+				while (rs.next()) {
 					TodoDTO todoDTO = new TodoDTO();
 					todoDTO.setId(rs.getInt("id"));
+					todoDTO.setUserId(rs.getInt("user_id"));
 					todoDTO.setTitle(rs.getString("title"));
 					todoDTO.setDescription(rs.getString("description"));
 					todoDTO.setDueDate(rs.getString("due_date"));
-					todoDTO.setCompleted(rs.getBoolean("completed"));
-					todoDTO.setUserId(rs.getInt("user_id"));
-					list.add(todoDTO);
+					todoDTO.setCompleted(rs.getString("completed"));
+					todos.add(todoDTO);
+					
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -131,21 +134,25 @@ public class TodoDAOImpl implements TodoDAO {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		System.out.println("TodoList All : " + list.toString());
-		return list;
+
+		return todos;
 	}
 
 	@Override
 	public void updateTodo(TodoDTO dto, int principalId) {
-		int rowCount = 0;
-		String sql = " update todos set title = ? where user_id = ? ";
+		// select -- 있는지 없는지 확인 과정(필요)
+		String sql = " update todos set title = ?, description = ?, due_date = ?, completed = ? where id = ? and user_id = ? ";
 		
 		try (Connection conn = dataSource.getConnection()) {
 			conn.setAutoCommit(false);
 			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				pstmt.setString(1, dto.getTitle());
-				pstmt.setInt(2, principalId);
-				rowCount = pstmt.executeUpdate();
+				pstmt.setString(2, dto.getDescription());
+				pstmt.setString(3, dto.getDueDate());
+				pstmt.setInt(4, dto.getCompleted() == "true" ? 1 : 0);
+				pstmt.setInt(5, dto.getId());
+				pstmt.setInt(6, dto.getUserId());
+				pstmt.executeUpdate();
 				conn.commit();
 			} catch (Exception e) {
 				conn.rollback();
@@ -157,16 +164,21 @@ public class TodoDAOImpl implements TodoDAO {
 		
 	}
 
+	/**
+	 * 삭제 기능
+	 * id - pk
+	 * principalId - 세션 ID
+	 */
 	@Override
 	public void deleteTodo(int id, int principalId) {
-		int rowCount = 0;
-		String sql = " delete from todos where id = ? ";
+		String sql = " delete from todos where id = ? and user_id = ? ";
 		
 		try (Connection conn = dataSource.getConnection()) {
 			conn.setAutoCommit(false);
 			try (PreparedStatement pstmt = conn.prepareStatement(sql)) {
 				pstmt.setInt(1, id);
-				rowCount = pstmt.executeUpdate();
+				pstmt.setInt(2, principalId);
+				pstmt.executeUpdate();
 				conn.commit();
 			} catch (Exception e) {
 				conn.rollback();

@@ -11,12 +11,11 @@
 <head>
 <meta charset="UTF-8">
 <title>할 일 목록</title>
-<link rel="stylesheet" type="text/css" href="../css/styles.css">
+<link rel="stylesheet" type="text/css" href="../css/todoListStyles.css">
 </head>
 <body>
 	<%
-		List<TodoDTO> todoList = (ArrayList)request.getAttribute("todoList");		
-		// out.print(todoList.toString());
+		List<TodoDTO> todoList = (List<TodoDTO>)request.getAttribute("list");		
 
 		if(todoList != null && !todoList.isEmpty()) {
 	%>
@@ -38,10 +37,10 @@
 			<td><%= todo.getTitle() %></td>
 			<td><%= todo.getDescription() %></td>
 			<td><%= todo.getDueDate() %></td>
-			<td><%= todo.getCompleted() == true ? "완료" : "미완료"%></td>
+			<td><%= todo.completedToString() == "true" ? "완료" : "미완료"%></td>
 			<td>
 				<a href="detail?id=<%= todo.getId() %>">상세보기</a>
-				<form action="delete">
+				<form action="delete" method="get">
 					<input type="hidden" name="id" value="<%= todo.getId() %>">
 					<button type="submit">삭제</button>
 				</form>

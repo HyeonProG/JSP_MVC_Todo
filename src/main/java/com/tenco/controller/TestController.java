@@ -36,9 +36,13 @@ public class TestController extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		String action = request.getPathInfo();
 
-		TodoDTO todoDTO = todoDAO.getTodoById(100);
+		// TodoDTO todoDTO = todoDAO.getTodoById(100);
 		// System.out.println(todoDTO.toString());
-		
+		// List<TodoDTO> list = todoDAO.getTodosByUserId(8);
+		// System.out.println(list.toString());
+		// System.out.println(todoDAO.getAllTodos());
+		// todoDAO.updateTodo(new TodoDTO(), 8);
+		todoDAO.deleteTodo(8, 8);
 		
 		
 	}
